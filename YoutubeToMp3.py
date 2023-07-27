@@ -47,5 +47,5 @@ def check_link():
 
 check_link()
 os.system("start Downloads & pause & exit")
-
+# by Nguyen Lam Truong
 # v26.07.2023 19:50
