@@ -1,6 +1,10 @@
-import os, re
+import os
+import re
 import moviepy.editor as mp
 from pytube import YouTube, Playlist
+
+def clean_filename(filename):
+    return re.sub(r'[\\/:"*?<>|]+', '', filename)
 
 def Download_Video_Mp3(videoMP3_url):
     download_folder = "./Downloads"
@@ -9,7 +13,7 @@ def Download_Video_Mp3(videoMP3_url):
     try:
         yt = YouTube(videoMP3_url)
         streams = yt.streams.filter(only_audio=True).first()
-        filename = f"{yt.title}.mp3"
+        filename = clean_filename(yt.title) + ".mp3"
         streams.download(download_folder, filename=filename)
         print("Downloaded {}".format(filename))
     except Exception as e:
@@ -28,16 +32,13 @@ def Download_Playlist_Mp3(playlistMP3_url):
         print("Downloaded:", url)
         if re.search("mp4", file):
             mp4_path = os.path.join(download_folder, file)
-            mp3_path = os.path.join(download_folder, os.path.splitext(file)[0] + ".mp3")
-            # print("Converting:", file)
+            mp3_path = os.path.join(download_folder, clean_filename(os.path.splitext(file)[0]) + ".mp3")
             new_file = mp.AudioFileClip(mp4_path)
             new_file.write_audiofile(mp3_path)
-            # print("Converted:", file)
             os.remove(mp4_path)
-            # print('Removed:', mp4_path)
 
 def check_link():
-    check = input(" By Nguyen Lam Truong\n >> Input your link Youtube: ")
+    check = input("\n >> Input your link Youtube: ")
     if "watch?v=" in check:
         Download_Video_Mp3(check)
     elif "playlist?list=" in check:
@@ -47,5 +48,6 @@ def check_link():
 
 check_link()
 os.system("start Downloads & pause & exit")
+
 # by Nguyen Lam Truong
-# v26.07.2023 19:50
+# v06.05.2024 13:25
